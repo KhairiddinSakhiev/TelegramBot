@@ -28,6 +28,13 @@ def create_database():
             first_name varchar(100),
             last_name varchar(100)
         );
+
+        create table if not exists cars(
+            id serial primary key,
+            model varchar(40),
+            prod_year varchar(40),
+            color varchar(50)
+        );
         """
     )
     conn.commit()
@@ -63,3 +70,40 @@ def get_user(user_id):
     if user:
         return True 
     return False
+
+
+def add_car(cars_obj):
+    conn = open_connection()
+    cur = conn.cursor()
+    cur.execute(
+        f"""insert into cars(model, prod_year, color) values 
+        ('{cars_obj["model"]}', '{cars_obj["prod_year"]}', '{cars_obj["color"]}')"""
+    )
+    conn.commit()
+    close_connection(conn, cur)
+
+
+def get_cars():
+    conn = open_connection()
+    cur = conn.cursor()
+    cur.execute("select * from cars")
+    cars = cur.fetchall()
+    close_connection(conn, cur)
+    return cars
+
+def update(cars_obj, id):
+    print(cars_obj, id)
+    print(cars_obj["model"],cars_obj["prod_year"],cars_obj["color"])
+    conn = open_connection()
+    cur = conn.cursor()
+    cur.execute(
+        f"""update cars set  
+        model='{cars_obj["model"]}',
+        prod_year='{cars_obj["prod_year"]}',
+        color='{cars_obj["color"]}' 
+        where id={int(id)} """
+    )
+    conn.commit()
+    close_connection(conn,cur)
+
+    
